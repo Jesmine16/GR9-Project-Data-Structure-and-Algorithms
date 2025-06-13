@@ -1,7 +1,10 @@
 #include<iostream>
 #include<fstream>
 #include<iomanip>
+#define MAX 7
 using namespace std;
+
+int array[MAX];
 
 const int RUN = 32; //use for sorting
 
@@ -546,6 +549,45 @@ class AppleStore {
 		}
 
 };
+
+void Merge(int lpos, int rpos, int rend) {
+	int i, lend, numelements, tmppos, TmpArray[MAX];
+	lend = rpos - 1;
+	tmppos = lpos;  
+	numelements = rend - lpos + 1;
+	
+	while( lpos<=lend && rpos <= rend ) {
+		if( array[lpos] <= array[rpos] ) {
+			TmpArray[tmppos++] = array[lpos++]; 
+		} else {
+			TmpArray[tmppos++] = array[rpos++]; 
+		}
+	}
+	
+	while(lpos <= lend) {
+		TmpArray[tmppos++] = array[lpos++]; 
+	}
+	
+	while(rpos <= rend) {
+		TmpArray[tmppos++] = array[rpos++];
+	}
+	
+	for(i = 0 ; i < numelements; i++, rend--) {
+		array[rend]=TmpArray[rend];  
+	}
+}  
+
+void MergeSort (int left, int right) {
+	int center;  
+	
+	if(left < right) {
+		center = (left + right)/2;
+		
+		MergeSort(left, center);
+		MergeSort(center+1, right);
+		Merge(left, center+1, right);
+	}
+}
 
 int BinarySearch() {
 	int table [200];
