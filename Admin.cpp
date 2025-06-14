@@ -1,10 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<iomanip>
-#define MAX 7
 using namespace std;
-
-int array[MAX];
 
 const int RUN = 32; //use for sorting
 
@@ -360,186 +357,6 @@ class AppleStore {
 			cout << "+---------+--------------+------------------------------+--------------+-------------+----------+" << endl;		
 		}
 		
-		// Perform ternary search in a sorted array
-		int TernarySearch(string arr[], int first, int last, string target) {
-		    if(first <= last) {
-			    int mid1 = first + (last - first) / 3;
-				int mid2 = last - (last - first) /3;
-				
-				if(arr[mid1] == target) {
-				    return mid1;
-				} 
-				
-				if(arr[mid2] == target) {
-				    return mid2;
-				}
-					
-				if(target < arr[mid1] ) {
-					return TernarySearch(arr, first, mid1, target);
-				} 
-					
-				if(target > arr[mid2] ) {
-					return TernarySearch(arr, mid2 + 1, last, target);
-				} 
-					
-				return TernarySearch(arr, mid1, mid2, target);
-			} else {
-			    return -1; // Not found
-			}
-		}
-		
-		// Insertion sort based on product category
-		void InsertionSort(int first, int last) {
-		    for (int i = first + 1; i <= last; i++) {
-			    Apple temp = queue[i]; // Store current element
-				int j = i - 1;
-				
-				while (j >= first && queue[j].category > temp.category) {
-				    queue[j + 1] = queue[j];
-					j--;
-				}
-				queue[j + 1] = temp;
-			}
-		}
-		
-		// Merge sort based on product category
-		void MergeSort(int f, int mid, int l) {
-		    int len1 = mid - f + 1, len2 = l - mid;
-		    
-			Apple* first = new Apple[len1];
-			Apple* last = new Apple[len2];
-			
-			for (int i = 0; i < len1; i++) {
-				first[i] = queue[f + i];
-			}
-			
-			for (int i = 0; i < len2; i++) {
-				last[i] = queue[mid + 1 + i];
-			}
-			
-			int i = 0;
-			int j = 0;
-			int k = f;
-			
-			while (i < len1 && j < len2) {
-			    if (first[i].category <= last[j].category) {
-				    queue[k] = first[i];
-					i++;
-				} else {
-				    queue[k] = last[j];
-					j++;
-				}
-				k++;
-			}
-				
-			while (i < len1) {
-				queue[k] = first[i];
-				k++;
-				i++;
-			}
-				
-			while (j < len2) {
-				queue[k] = last[j];
-				k++;
-				j++;
-			}
-		}
-		
-		//Tim sort based on product category
-		void TimSort(int n) {
-			
-			for (int i = 0; i < n; i += RUN) {
-				InsertionSort(i, min((i + RUN - 1), (n - 1)));
-			}
-			
-			for (int size = RUN; size < n; size = 2 * size) {
-			    for (int first = 0; first < n; first += 2 * size) {
-				    int mid = first + size - 1;
-					int last = min((first + 2 * size - 1), (n - 1));
-					
-					if (mid < last) {
-						MergeSort(first, mid, last);
-					}
-				}
-			}
-		}
-		
-		// Insertion sort based on product ID
-		void IDInsertionSort(int first, int last) {
-		    for (int i = first + 1; i <= last; i++) {
-			    Apple temp = queue[i];
-				int j = i - 1;
-				
-				while (j >= first && queue[j].id > temp.id) {
-				    queue[j + 1] = queue[j];
-					j--;
-				}
-				queue[j + 1] = temp;
-			}
-		}
-		
-		// Merge sort based on product ID
-		void IDMergeSort(int f, int mid, int l) {
-		    int len1 = mid - f + 1, len2 = l - mid;
-		    
-			Apple* first = new Apple[len1];
-			Apple* last = new Apple[len2];
-			
-			for (int i = 0; i < len1; i++) {
-				first[i] = queue[f + i];
-			}
-			
-			for (int i = 0; i < len2; i++) {
-				last[i] = queue[mid + 1 + i];
-			}
-			
-			int i = 0;
-			int j = 0;
-			int k = f;
-			
-			while (i < len1 && j < len2) {
-			    if (first[i].id <= last[j].id) {
-				    queue[k] = first[i];
-					i++;
-				} else {
-				    queue[k] = last[j];
-					j++;
-				}
-				k++;
-			}
-				
-			while (i < len1) {
-				queue[k] = first[i];
-				k++;
-				i++;
-			}
-				
-			while (j < len2) {
-				queue[k] = last[j];
-				k++;
-				j++;
-			}
-		}
-		
-		// Tim sort based on product ID
-		void IDTimSort(int n) {
-			
-			for (int i = 0; i < n; i += RUN) {
-				IDInsertionSort(i, min((i + RUN - 1), (n - 1)));
-			}
-			
-			for (int size = RUN; size < n; size = 2 * size) {
-			    for (int first = 0; first < n; first += 2 * size) {
-				    int mid = first + size - 1;
-					int last = min((first + 2 * size - 1), (n - 1));
-					
-					if (mid < last) {
-						IDMergeSort(first, mid, last);
-					}
-				}
-			}
-		}
-		
 		// Pause function to continue execution after user input
 		void cont() {
 			string key;
@@ -547,47 +364,68 @@ class AppleStore {
 			cout << "\n[Enter any key and press enter to continue]";
 			cin >> key;
 		}
+		
+		//left = Left position : starting index of the left sorted subarray
+		//right = 	Right position – starting index of the right sorted subarray
+		//lend = left end : last index for part left
+		//rend = right end : last index for part right
+		//num = Total Number of Elements to be Merge
+		//temp = Index for Inserting into TmpArray
+		
+		void Merge(int left, int right, int rend) {
+		    int i, lend, num, tmp;
+			lend = right - 1;
+			tmp = left;  
+			num = rend - left + 1;
+			
+			Apple* TmpArray = new Apple[50];
+			
+			while( left <= lend && right <= rend ) {
+			    if( queue[left].id <= queue[right].id ) {
+				    TmpArray[tmp++] = queue[left++]; 
+				} else {
+					TmpArray[tmp++] = queue[right++]; 
+				}
+			}
+			
+			while(left <= lend) {
+			    TmpArray[tmp++] = queue[left++]; 
+			}
+				
+			while(right <= rend) {
+				TmpArray[tmp++] = queue[right++];
+			}
+				
+			//for(i = 0 ; i < num; i++, rend--) {
+				//	queue[rend] =TmpArray[rend];  
+			//}
+				
+			// Correct copying back from TmpArray to queue
+			for(i = 0; i < num; i++) {
+				queue[rend - num + 1 + i] = TmpArray[rend - num + 1 + i];
+			}
+			
+			delete[] TmpArray;
+		}  
+		
+		//first = The starting index of the portion of the array to be sorted
+		//last = The ending index of the portion of the array to be sorted
+		//center = 	The middle index used to split the array into two halves
+		
+		void MergeSort (int first, int last) {
+		    int center;  
+			
+			if(first < last) {
+			    center = (first + last)/2;
+				
+				//breaks the array into smaller parts
+				MergeSort(first, center); 
+				MergeSort(center+1, last);
+				Merge(first, center+1, last);
+			}
+		}
 
 };
-
-void Merge(int lpos, int rpos, int rend) {
-	int i, lend, numelements, tmppos, TmpArray[MAX];
-	lend = rpos - 1;
-	tmppos = lpos;  
-	numelements = rend - lpos + 1;
-	
-	while( lpos<=lend && rpos <= rend ) {
-		if( array[lpos] <= array[rpos] ) {
-			TmpArray[tmppos++] = array[lpos++]; 
-		} else {
-			TmpArray[tmppos++] = array[rpos++]; 
-		}
-	}
-	
-	while(lpos <= lend) {
-		TmpArray[tmppos++] = array[lpos++]; 
-	}
-	
-	while(rpos <= rend) {
-		TmpArray[tmppos++] = array[rpos++];
-	}
-	
-	for(i = 0 ; i < numelements; i++, rend--) {
-		array[rend]=TmpArray[rend];  
-	}
-}  
-
-void MergeSort (int left, int right) {
-	int center;  
-	
-	if(left < right) {
-		center = (left + right)/2;
-		
-		MergeSort(left, center);
-		MergeSort(center+1, right);
-		Merge(left, center+1, right);
-	}
-}
 
 int BinarySearch() {
 	int table [200];
@@ -735,7 +573,10 @@ int main() {
 			case 5: // Sort and display by ID
 				cout << "\n-----Display Sorted Product-----" << endl;
 				arr = q.IDtoArray(size); // Convert to array
-				q.IDTimSort(size); // Sort by ID
+				q.MergeSort(0, size-1); // Sort by ID
+				//Elements after being sorted 
+				cout<<"The elements after Merge Sort"<<endl; 
+				
 				q.display();
 				
 				q.cont();
@@ -744,15 +585,15 @@ int main() {
 			case 6: // Search by category
 				cout << "\n-----Search Product By Category-----" << endl;
 				arr = q.toArray(size); // Convert to array
-				q.TimSort(size); // Sort by category
+				//q.TimSort(size); // Sort by category
 				
 				cout << "Enter category to search: ";
 				cin  >> target;
 				
-				result = q.TernarySearch(arr, 0, size - 1, target); // Search
+				//result = q.TernarySearch(arr, 0, size - 1, target); // Search
 				
 				if (result != -1) {
-			        q.searchByCategory(target); // Display
+			        //q.searchByCategory(target); // Display
 				} else {
 					cout << "Category \'" << target << "\' not found";
 				}
@@ -761,7 +602,7 @@ int main() {
 				
 			case 7: // Save sorted data
 			    arr = q.IDtoArray(size);
-				q.IDTimSort(size);
+				//q.IDTimSort(size);
 			    q.savetofile("sorted_information.txt");
 				cout << "Sorted data save successfully." << endl;
 				
