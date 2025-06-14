@@ -424,49 +424,37 @@ class AppleStore {
 				Merge(first, center+1, last);
 			}
 		}
-
-};
-
-int BinarySearch() {
-	int table [200];
-	int target,first,last,mid;
-	int i; 
-	int found;
-	
-	//Setting up the array
-	for(i=0; i<200; i++) {
-		table[i] = 2*i;
-	}
-	
-	first = 0;
-	last = 199;
-	found = 0;
-	
-	//Input the target 
-	cout<<"Input the target"; 
-	cin>>target;
-	
-	//The binary search 
-	while( (found==0) && (first <= last) ) {
-		mid = (first + last) / 2; 
 		
-		if( target == table[mid]) {
-			found = 1; 
-		} else {
-			if( target<table[mid] ) {
-				last = mid - 1;
+		//Searching Algorithm - Binary Search
+		int BinarySearch(string arr[], int first, int last, string target) {
+
+			int mid;
+			int i; 
+			int found = 0;
+			
+			//The binary search 
+			while( (found==0) && (first <= last) ) {
+			    mid = (first + last) / 2; 
+				
+				if( target == arr[mid]) {
+				    found = 1; 
+				} else {
+					if( target<arr[mid] ) {
+					    last = mid - 1;
+					} else {
+						first = mid + 1;
+					}
+				}
+			}
+			
+			if(found) {
+			    cout<<"\nPosition ="<<mid << endl;
 			} else {
-				first = mid + 1;
+			    cout<<"\nTarget not found";
 			}
 		}
-	}
-	
-	if(found) {
-		cout<<"\nPosition ="<<mid;
-	} else {
-		cout<<"\nTarget not found";
-	}
-}
+
+};
 
 int main() {
 	AppleStore q; // Create AppleStore object
