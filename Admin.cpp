@@ -448,9 +448,9 @@ class AppleStore {
 			}
 			
 			if(found) {
-			    cout<<"\nPosition ="<<mid << endl;
+			    searchByCategory(target);
 			} else {
-			    cout<<"\nTarget not found";
+			    cout << "Category \'" << target << "\' not found";
 			}
 		}
 
@@ -573,24 +573,19 @@ int main() {
 			case 6: // Search by category
 				cout << "\n-----Search Product By Category-----" << endl;
 				arr = q.toArray(size); // Convert to array
-				//q.TimSort(size); // Sort by category
+				//q.MergeSort(0, size-1); 
 				
 				cout << "Enter category to search: ";
 				cin  >> target;
 				
-				//result = q.TernarySearch(arr, 0, size - 1, target); // Search
-				
-				if (result != -1) {
-			        //q.searchByCategory(target); // Display
-				} else {
-					cout << "Category \'" << target << "\' not found";
-				}
+				result = q.BinarySearch(arr, 0, size-1, target);
+
 				q.cont();
 				break;
 				
 			case 7: // Save sorted data
 			    arr = q.IDtoArray(size);
-				//q.IDTimSort(size);
+				q.MergeSort(0, size-1);
 			    q.savetofile("sorted_information.txt");
 				cout << "Sorted data save successfully." << endl;
 				
