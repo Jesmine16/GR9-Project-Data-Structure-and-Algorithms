@@ -559,6 +559,9 @@ int main() {
 			    break;
 				
 			case 5: // Sort and display by ID
+			    cout << "Sort product by:" << endl;
+			    cout << "1. Category" << endl;
+			    cout << "2. Price" << endl;
 				cout << "\n-----Display Sorted Product-----" << endl;
 				arr = q.IDtoArray(size); // Convert to array
 				q.MergeSort(0, size-1); // Sort by ID
