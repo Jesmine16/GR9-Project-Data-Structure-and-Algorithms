@@ -696,8 +696,6 @@ int main() {
 					q.display();
 				} 
 				
-				q.display();
-				
 				q.cont();
 				break;
 				
