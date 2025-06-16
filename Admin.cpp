@@ -345,6 +345,29 @@ class AppleStore {
 			
 			cont(); // Pause function
 		}
+		
+		// Search and display products by ID
+        void searchByID(string key) {
+        	
+        	cout << "+---------+--------------+------------------------------+--------------+-------------+----------+" << endl;
+			cout << "| ID      | Category     | Product Name                 | Price (RM)   | Cost (RM)   | Stock    |" << endl;
+			cout << "+---------+--------------+------------------------------+--------------+-------------+----------+" << endl;
+
+			for (int i = head; i <= tail; i++) {
+			    if (queue[i].id == key) {
+		
+	        	    cout << "| ";
+	    		    cout.width(7); cout << left << queue[i].id << " | ";
+		    	    cout.width(12); cout << left << queue[i].category << " | ";
+		    	    cout.width(28); cout << left << queue[i].name << " | ";
+		        	cout.width(12); cout << right << queue[i].price << " | ";
+			    	cout.width(11); cout << right << queue[i].cost << " | ";
+					cout.width(8); cout << right << queue[i].stock << " | " << endl; 
+				} 
+			}	
+			
+			cout << "+---------+--------------+------------------------------+--------------+-------------+----------+" << endl;		
+		}
         
         // Search and display products by category
         void searchByCategory(string key) {
@@ -384,7 +407,7 @@ class AppleStore {
 		//num = Total Number of Elements to be Merge
 		//temp = Index for Inserting into TmpArray
 		
-		void Merge(int left, int right, int rend) {
+		void IDMerge(int left, int right, int rend) {
 		    int i, lend, num, tmp;
 			lend = right - 1;
 			tmp = left;  
@@ -424,16 +447,16 @@ class AppleStore {
 		//last = The ending index of the portion of the array to be sorted
 		//center = 	The middle index used to split the array into two halves
 		
-		void MergeSort (int first, int last) {
+		void IDMergeSort (int first, int last) {
 		    int center;  
 			
 			if(first < last) {
 			    center = (first + last)/2;
 				
 				//breaks the array into smaller parts
-				MergeSort(first, center); 
-				MergeSort(center+1, last);
-				Merge(first, center+1, last);
+				IDMergeSort(first, center); 
+				IDMergeSort(center+1, last);
+				IDMerge(first, center+1, last);
 			}
 		}
 		
@@ -527,8 +550,39 @@ class AppleStore {
 			}
 		}
 		
-		//Searching Algorithm - Binary Search
-		int BinarySearch(string arr[], int first, int last, string target) {
+		//Searching Algorithm - Binary Search - ID
+		int IDBinarySearch(string arr[], int first, int last, string target) {
+
+			int mid;
+			int i; 
+			int found = 0;
+			
+			//The binary search 
+			while( (found==0) && (first <= last) ) {
+			    mid = (first + last) / 2; 
+				
+				if( target == arr[mid]) {
+				    found = 1; 
+				    
+				} else {
+					if( target<arr[mid] ) {
+					    last = mid - 1;
+					} else {
+						first = mid + 1;
+					}
+				}
+				
+			}
+			
+			if(found) {
+			    searchByID(target);
+			} else {
+			    cout << "Product ID \'" << target << "\' not found";
+			}
+		}
+		
+		//Searching Algorithm - Binary Search - Category
+		int CategoryBinarySearch(string arr[], int first, int last, string target) {
 
 			int mid;
 			int i; 
@@ -547,6 +601,7 @@ class AppleStore {
 						first = mid + 1;
 					}
 				}
+				
 			}
 			
 			if(found) {
@@ -564,7 +619,7 @@ int main() {
 	string filename = "Apple_Store.txt";
     q.readfile(filename); // Load data from file
 	 
-	int choice, sortChoice;
+	int choice, sortChoice, searchChoice;
 	
 	string id, name, category, type;
 	int stock;
@@ -660,7 +715,7 @@ int main() {
 			    q.cont();
 			    break;
 				
-			case 5: // Sort and display by ID
+			case 5: // Sort and display
 			    cout << "\nSort product by:" << endl;
 			    cout << "1. Product ID" << endl;
 			    cout << "2. Category" << endl;
@@ -680,7 +735,7 @@ int main() {
 			    if (sortChoice == 1) {
 			    	arr = q.IDtoArray(size);
 			    	cout << "\n-----Display Product by ID-----" << endl;
-			    	q.MergeSort(0, size-1);
+			    	q.IDMergeSort(0, size-1);
 				} 
 				if (sortChoice == 2) {
 					arr = q.CategorytoArray(size);
@@ -698,7 +753,47 @@ int main() {
 				q.cont();
 				break;
 				
-			case 6: // Search by category
+			case 6: // Searching
+			    cout << "\nSearch product by:" << endl;
+			    cout << "1. Product ID" << endl;
+			    cout << "2. Category" << endl;
+			    
+			    cout << "\nEnter your choice: ";
+			    cin >> searchChoice;
+			    
+			    while (searchChoice<1 || searchChoice>2) {
+			    	cout << "Invalid input.... Please try again.";
+					cout << endl;
+					
+					cout << "\nReenter your choice: ";
+					cin  >> choice; 
+				}
+			    
+			    if (searchChoice == 1) {
+			    	arr = q.IDtoArray(size);
+			    	q.IDMergeSort(0, size-1);
+			    	
+			    	q.display();
+			    	
+			    	cout << "\n-----Search Product by ID-----" << endl;
+			    	
+			    	cout << "Enter product ID to search: ";
+					cin  >> target;
+					
+					result = q.IDBinarySearch(arr, 0, size-1, target);
+				} 
+				if (searchChoice == 2) {
+					arr = q.CategorytoArray(size);
+					//q.CategoryMergeSort(0, size-1);
+			    	cout << "\n-----Search Product by Category-----" << endl;
+			    	
+			    	cout << "Enter category to search: ";
+					cin  >> target;
+					
+					result = q.CategoryBinarySearch(arr, 0, size-1, target);
+				} 
+			
+			
 				cout << "\n-----Search Product By Category-----" << endl;
 				arr = q.CategorytoArray(size); // Convert to array
 				//q.MergeSort(0, size-1); 
@@ -706,14 +801,14 @@ int main() {
 				cout << "Enter category to search: ";
 				cin  >> target;
 				
-				result = q.BinarySearch(arr, 0, size-1, target);
+				result = q.CategoryBinarySearch(arr, 0, size-1, target);
 
 				q.cont();
 				break;
 				
 			case 7: // Save sorted data
 			    arr = q.IDtoArray(size);
-				q.MergeSort(0, size-1);
+				q.IDMergeSort(0, size-1);
 			    q.savetofile("sorted_information.txt");
 				cout << "Sorted data save successfully." << endl;
 				
