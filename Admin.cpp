@@ -679,22 +679,21 @@ int main() {
 			    
 			    if (sortChoice == 1) {
 			    	arr = q.IDtoArray(size);
-			    	cout << "\n-----Display Product by Category-----" << endl;
+			    	cout << "\n-----Display Product by ID-----" << endl;
 			    	q.MergeSort(0, size-1);
-			    	q.display();
 				} 
 				if (sortChoice == 2) {
 					arr = q.CategorytoArray(size);
 			    	cout << "\n-----Display Product by Category-----" << endl;
 			    	q.CategoryMergeSort(0, size-1);
-			    	q.display();
 				} 
 				if (sortChoice == 3) {
 					arr = q.PricetoArray(size);
 					cout << "\n-----Display Product by Price-----" << endl;
 					q.PriceMergeSort(0, size-1);
-					q.display();
 				} 
+				
+				q.display();
 				
 				q.cont();
 				break;
