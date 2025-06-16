@@ -109,12 +109,24 @@ class AppleStore {
 		}
 		
 		// Convert product categories to a string array
-		string* toArray(int &size) {
+		string* CategorytoArray(int &size) {
 		    size = tail - head + 1;
 			string* arr = new string[size];
 			
 			for (int i = 0; i < size; ++i) {
 			    arr[i] = queue[head + i].category; 
+			}
+			
+			return arr;
+		}
+		
+		// Convert product price to a string array
+		string* PricetoArray(int &size) {
+		    size = tail - head + 1;
+			string* arr = new string[size];
+			
+			for (int i = 0; i < size; ++i) {
+			    arr[i] = queue[head + i].price; 
 			}
 			
 			return arr;
@@ -425,6 +437,96 @@ class AppleStore {
 			}
 		}
 		
+		void CategoryMerge(int left, int right, int rend) {
+		    int i, lend, num, tmp;
+			lend = right - 1;
+			tmp = left;  
+			num = rend - left + 1;
+			
+			Apple* TmpArray = new Apple[50];
+			
+			while( left <= lend && right <= rend ) {
+			    if( queue[left].category <= queue[right].category ) {
+				    TmpArray[tmp++] = queue[left++]; 
+				} else {
+					TmpArray[tmp++] = queue[right++]; 
+				}
+			}
+			
+			while(left <= lend) {
+			    TmpArray[tmp++] = queue[left++]; 
+			}
+				
+			while(right <= rend) {
+				TmpArray[tmp++] = queue[right++];
+			}
+				
+			// Correct copying back from TmpArray to queue
+			for(i = 0; i < num; i++) {
+				queue[rend - num + 1 + i] = TmpArray[rend - num + 1 + i];
+			}
+			
+			delete[] TmpArray;
+		}  
+		
+		void CategoryMergeSort (int first, int last) {
+		    int center;  
+			
+			if(first < last) {
+			    center = (first + last)/2;
+				
+				//breaks the array into smaller parts
+				CategoryMergeSort(first, center); 
+				CategoryMergeSort(center+1, last);
+				CategoryMerge(first, center+1, last);
+			}
+		}
+		
+		void PriceMerge(int left, int right, int rend) {
+		    int i, lend, num, tmp;
+			lend = right - 1;
+			tmp = left;  
+			num = rend - left + 1;
+			
+			Apple* TmpArray = new Apple[50];
+			
+			while( left <= lend && right <= rend ) {
+			    if( queue[left].price <= queue[right].price ) {
+				    TmpArray[tmp++] = queue[left++]; 
+				} else {
+					TmpArray[tmp++] = queue[right++]; 
+				}
+			}
+			
+			while(left <= lend) {
+			    TmpArray[tmp++] = queue[left++]; 
+			}
+				
+			while(right <= rend) {
+				TmpArray[tmp++] = queue[right++];
+			}
+				
+			// Correct copying back from TmpArray to queue
+			for(i = 0; i < num; i++) {
+				queue[rend - num + 1 + i] = TmpArray[rend - num + 1 + i];
+			}
+			
+			delete[] TmpArray;
+		}  
+		
+		void PriceMergeSort (int first, int last) {
+		    int center;  
+			
+			if(first < last) {
+			    center = (first + last)/2;
+				
+				//breaks the array into smaller parts
+				PriceMergeSort(first, center); 
+				PriceMergeSort(center+1, last);
+				PriceMerge(first, center+1, last);
+			}
+		}
+		
 		//Searching Algorithm - Binary Search
 		int BinarySearch(string arr[], int first, int last, string target) {
 
@@ -462,7 +564,7 @@ int main() {
 	string filename = "Apple_Store.txt";
     q.readfile(filename); // Load data from file
 	 
-	int choice;
+	int choice, sortChoice;
 	
 	string id, name, category, type;
 	int stock;
@@ -559,14 +661,40 @@ int main() {
 			    break;
 				
 			case 5: // Sort and display by ID
-			    cout << "Sort product by:" << endl;
-			    cout << "1. Category" << endl;
-			    cout << "2. Price" << endl;
-				cout << "\n-----Display Sorted Product-----" << endl;
-				arr = q.IDtoArray(size); // Convert to array
-				q.MergeSort(0, size-1); // Sort by ID
-				//Elements after being sorted 
-				cout<<"The elements after Merge Sort"<<endl; 
+			    cout << "\nSort product by:" << endl;
+			    cout << "1. Product ID" << endl;
+			    cout << "2. Category" << endl;
+			    cout << "3. Price" << endl;
+			    
+			    cout << "\nEnter your choice: ";
+			    cin >> sortChoice;
+			    
+			    while (sortChoice<1 || sortChoice>3) {
+			    	cout << "Invalid input.... Please try again.";
+					cout << endl;
+					
+					cout << "\nReenter your choice: ";
+					cin  >> choice; 
+				}
+			    
+			    if (sortChoice == 1) {
+			    	arr = q.IDtoArray(size);
+			    	cout << "\n-----Display Product by Category-----" << endl;
+			    	q.MergeSort(0, size-1);
+			    	q.display();
+				} 
+				if (sortChoice == 2) {
+					arr = q.CategorytoArray(size);
+			    	cout << "\n-----Display Product by Category-----" << endl;
+			    	q.CategoryMergeSort(0, size-1);
+			    	q.display();
+				} 
+				if (sortChoice == 3) {
+					arr = q.PricetoArray(size);
+					cout << "\n-----Display Product by Price-----" << endl;
+					q.PriceMergeSort(0, size-1);
+					q.display();
+				} 
 				
 				q.display();
 				
@@ -575,7 +703,7 @@ int main() {
 				
 			case 6: // Search by category
 				cout << "\n-----Search Product By Category-----" << endl;
-				arr = q.toArray(size); // Convert to array
+				arr = q.CategorytoArray(size); // Convert to array
 				//q.MergeSort(0, size-1); 
 				
 				cout << "Enter category to search: ";
