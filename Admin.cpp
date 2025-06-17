@@ -643,13 +643,14 @@ int main() {
 		cout << "\n5. Sort product";
 		cout << "\n6. Search product";
 		cout << "\n7. Display summary report";
-		cout << "\n8. Exit.";
+		cout << "\n8. Save sorted data (by id)";
+		cout << "\n9. Exit.";
 		
 		cout << "\n\nEnter your choice: ";
 		cin  >> choice;
 		
 		// Input validation
-		while ( choice<1 || choice>8) {
+		while ( choice<1 || choice>9) {
 		    cout << "Invalid input.... Please try again.";
 			cout << endl;
 			
@@ -827,7 +828,7 @@ int main() {
 				break;
 		}
 	
-	} while (choice != 8); // Repeat until exit
+	} while (choice != 9); // Repeat until exit
 	
 	cout << "Goodbye.";
 }
