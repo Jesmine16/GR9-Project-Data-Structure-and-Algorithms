@@ -619,7 +619,7 @@ int main() {
 	string filename = "Apple_Store.txt";
     q.readfile(filename); // Load data from file
 	 
-	int choice, sortChoice, searchChoice;
+	int choice, sortChoice, searchChoice, reportChoice;
 	
 	string id, name, category, type;
 	int stock;
@@ -766,14 +766,15 @@ int main() {
 					cout << endl;
 					
 					cout << "\nReenter your choice: ";
-					cin  >> choice; 
+					cin  >> searchChoice; 
 				}
 			    
 			    if (searchChoice == 1) {
 			    	arr = q.IDtoArray(size);
 			    	q.IDMergeSort(0, size-1);
 			    	
-			    	q.display();
+			    	arr = q.IDtoArray(size);
+			    	q.IDMergeSort(0, size-1);
 			    	
 			    	cout << "\n-----Search Product by ID-----" << endl;
 			    	
@@ -792,21 +793,31 @@ int main() {
 					
 					result = q.CategoryBinarySearch(arr, 0, size-1, target);
 				} 
-			
-			
-				cout << "\n-----Search Product By Category-----" << endl;
-				arr = q.CategorytoArray(size); // Convert to array
-				//q.MergeSort(0, size-1); 
-				
-				cout << "Enter category to search: ";
-				cin  >> target;
-				
-				result = q.CategoryBinarySearch(arr, 0, size-1, target);
 
 				q.cont();
 				break;
 				
 			case 7: // Save sorted data
+			    cout << "\nDisplay report:" << endl;
+			    cout << "1. Daily sales report" << endl;
+			    cout << "2. Weekly sales report" << endl;
+			    
+			    cout << "\nEnter your choice: ";
+			    cin >> reportChoice;
+			    
+			    while (reportChoice<1 || reportChoice>2) {
+			    	cout << "Invalid input.... Please try again.";
+					cout << endl;
+					
+					cout << "\nReenter your choice: ";
+					cin  >> reportChoice; 
+				}
+			    
+				
+				q.cont();
+				break;
+				
+			case 8: // Save sorted data
 			    arr = q.IDtoArray(size);
 				q.IDMergeSort(0, size-1);
 			    q.savetofile("sorted_information.txt");
