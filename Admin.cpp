@@ -635,7 +635,7 @@ int main() {
 		system("cls"); // Clear screen
 		
 		// Display menu
-		cout << "Welcome to Apple Store";
+		cout << "Welcome to Apple Inventory Store";
 		cout << "\n1. Display all product";
 		cout << "\n2. Add new product";
 		cout << "\n3. Update product details";
