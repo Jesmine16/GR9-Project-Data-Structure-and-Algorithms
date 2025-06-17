@@ -644,7 +644,6 @@ class Apple_Store
 		    cartFile.close();
 		}
 
-
 };
 
 int main()
