@@ -5,17 +5,13 @@
 
 using namespace std;
 
-const int TABLE_SIZE = 23;//hashing table size
+const int RUN = 32; //use for sorting
 
-struct Apple //define variable
-{
-	string ID;
-	string Category;
-	string Product_Name;
-	double Price;
-	double Cost;
-	double Stock;
-	Apple* next;// point to the next node in the chain
+struct Apple {
+	string id, category, name;
+	int stock;
+	double price, cost;
+	bool deleted = false;
 };
 
 struct CartItem 
@@ -32,178 +28,257 @@ class Apple_Store
 {
 	private:
 		
-		Apple* table[TABLE_SIZE];//our hashing table, using saperate chaining
-		
-		// we are using ACSII converting a string ID to a table index
-		//this hashing method we get the idea from AI, and make a reference to it
-		int hashFunction(const string& key)
-		{
-			int sum = 0;
-			for (int i=0; i<key.length(); i++)
-			{
-				sum += (i+1) * key[i];
-			}
-			return sum % TABLE_SIZE;
-		}
-		
-		CartItem cart[20];
-		int cartCount = 0;	
+		Apple queue[50]; 
+   		int head, tail;	
+   		int count = 0;
 		
 	public:
 		
-		Apple_Store()//initialize the hash table
-		{
-			for(int i=0; i<TABLE_SIZE; i++)
+		Apple_Store() 
+		{  
+	        tail = -1;  
+	        head = 0;  
+	    }  
+		
+		// Check the queue is empty or not
+		int empty() {  
+		    if(head == tail+1) 
 			{
-				table[i] = NULL;
+			    return 1;  
+			} 
+			else 
+			{
+				return 0;
+			}
+		}  
+		
+		// Check the queue is full or not
+		int full() {
+			if(tail == 49) 
+			{
+				return 1;
+			} 
+			else 
+			{
+				return 0;
 			}
 		}
 		
 		//add new product
-		void addProduct(const string& id, const string& category, const string& product_name, 
-		double price, double cost, double stock)
+		// Add a new product to the queue
+		void addProduct(string id, string category, string name, double price, double cost, int stock) 
 		{
-			if(checkID(id))
+			if(!full()) 
 			{
-				cout << "This Product ID is already exists! " << endl;
-				return;
-			}
-			 
-			int index = hashFunction(id);
-			
-			Apple* newNode = new Apple;
-			newNode -> ID = id;
-			newNode -> Category = category;
-			newNode -> Product_Name = product_name;
-			newNode -> Price = price;
-			newNode -> Cost = cost;
-			newNode -> Stock = stock;
-			newNode -> next = NULL;
-			
-			//insertion into the head of a linked table
-			if(table[index] == NULL)
+				tail++;
+				queue[tail].id = id;
+				queue[tail].category = category;				
+				queue[tail].name = name;
+				queue[tail].price = price;
+				queue[tail].cost = cost;
+				queue[tail].stock = stock;
+			} 
+			else 
 			{
-				table[index] = newNode;
+				cout << "Queue is full" << endl;
+				
+				saveToFile("Apple_Store.txt");
 			}
-			else
-			{
-				newNode -> next = table[index];
-				table[index] = newNode;
-			}
-			 
-			saveToFile("Apple_Store.txt");
-		} 
+		}
 		
 		//save all data to the txt file
 		void saveToFile(const string& filename)
 		{
 			ofstream outFile(filename);
 			
-			if(!outFile)
-			{
-				cout << "Error opening file! " << endl;
-			}
-			
-			for(int i=0; i<TABLE_SIZE; i++)
-			{
-				Apple* current = table[i];
-				while(current != NULL)
+			    if(!outFile) 
 				{
-					outFile << current -> ID << ","
-					<< current -> Category << ","
-					<< current -> Product_Name << ","
-					<< current -> Price << ","
-					<< current -> Cost <<","
-					<< current -> Stock << endl;
-					
-					current = current -> next;
-				}
-			}
+			        cout << "Error opening file! " << endl;
+			        return;
+			    }
+			    
+			    if(empty()) 
+				{
+			        cout << "Queue is empty, nothing to save." << endl;
+			        outFile.close();
+			        return;
+			    }
+			    
+			    for(int i = head; i <= tail; i++) 
+				{
+			        outFile << queue[i].id << ","
+			                << queue[i].category << ","
+			                << queue[i].name << ","
+			                << queue[i].price << ","
+			                << queue[i].cost << ","
+			                << queue[i].stock << endl;
+			    }
 			
 			outFile.close();
 		}
 		
 		//display our product list, with table
-		void displayData()
+		void displayData() 
 		{
 		    cout << "+---------+--------------+------------------------------+----------+----------+----------+" << endl;
 		    cout << "| ID      | Category     | Product Name                 | Price    | Cost     | Stock    |" << endl;
 		    cout << "+---------+--------------+------------------------------+----------+----------+----------+" << endl;
 		
-		    bool hasData = false;
-		
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		
-		        while (current != NULL)
-		        {
-		            hasData = true;
-		
+		    if (empty()) 
+			{
+		        cout << "|" << setw(76) << right << "No products available." << " |" << endl;
+		    } else 
+			{
+		        for (int i = head; i <= tail; i++) 
+				{
 		            cout << "| ";
-		            cout.width(7); cout << left << current->ID << " | ";
-		            cout.width(12); cout << left << current->Category << " | ";
-		            cout.width(28); cout << left << current->Product_Name << " | ";
-		            cout.width(8); cout << right << fixed << setprecision(2) << current->Price << " | ";
-		            cout.width(8); cout << right << fixed << setprecision(2) << current->Cost << " | ";
-		            cout.width(8); cout << right << current->Stock << " |" << endl;
-		
-		            current = current->next;
+		            cout.width(7); cout << left << queue[i].id << " | ";
+		            cout.width(12); cout << left << queue[i].category << " | ";
+		            cout.width(28); cout << left << queue[i].name << " | ";
+		            cout.width(8); cout << right << fixed << setprecision(2) << queue[i].price << " | ";
+		            cout.width(8); cout << right << fixed << setprecision(2) << queue[i].cost << " | ";
+		            cout.width(8); cout << right << queue[i].stock << " |" << endl;
 		        }
 		    }
-		
-		    if (!hasData)
-		    {
-		        cout << "|" << setw(76) << right << "No product found." << " |" << endl;
-		    }
-		
+		    
 		    cout << "+---------+--------------+------------------------------+----------+----------+----------+" << endl;
+		}
+		
+		void mergeByCategory(int left, int mid, int right) ///
+		{
+		    int n1 = mid - left + 1;
+		    int n2 = right - mid;
+		    
+		    Apple* leftArr = new Apple[n1];
+		    Apple* rightArr = new Apple[n2];
+		    
+		    for (int i = 0; i < n1; i++)
+		        leftArr[i] = queue[left + i];
+		    for (int j = 0; j < n2; j++)
+		        rightArr[j] = queue[mid + 1 + j];
+		    
+		    int i = 0, j = 0, k = left;
+		    while (i < n1 && j < n2) 
+			{
+		        if (leftArr[i].category <= rightArr[j].category) 
+				{
+		            queue[k] = leftArr[i];
+		            i++;
+		        } 
+				else 
+				{
+		            queue[k] = rightArr[j];
+		            j++;
+		        }
+		        k++;
+		    }
+		    
+		    while (i < n1) 
+			{
+		        queue[k] = leftArr[i];
+		        i++;
+		        k++;
+		    }
+		    while (j < n2) 
+			{
+		        queue[k] = rightArr[j];
+		        j++;
+		        k++;
+		    }
+		    
+		    delete[] leftArr;
+		    delete[] rightArr;
+		}
+
+		void mergeSortByCategory(int left, int right) 
+		{
+		    if (left < right) 
+			{
+		        int mid = left + (right - left) / 2;
+		        mergeSortByCategory(left, mid);
+		        mergeSortByCategory(mid + 1, right);
+		        mergeByCategory(left, mid, right);
+		    }
 		}
 
 		//using the category to search product, also show will table
-		void searchByCategory(const string& target)
+		void searchByCategory(const string& target) 
 		{
-		    bool found = false;
-		
+		    if (!empty()) 
+			{
+		        mergeSortByCategory(head, tail);
+		    } 
+			else 
+			{
+		        cout << "Queue is empty!" << endl;
+		        return;
+		    }
+		    
 		    cout << "+---------+--------------+------------------------------+----------+----------+----------+" << endl;
 		    cout << "| ID      | Category     | Product Name                 | Price    | Cost     | Stock    |" << endl;
 		    cout << "+---------+--------------+------------------------------+----------+----------+----------+" << endl;
-		
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		
-		        while (current != NULL)
-		        {
-		            if (current->Category == target)
-		            {
-		                found = true;
-		
-		                cout << "| ";
-		                cout.width(7);  cout << left  << current->ID << " | ";
-		                cout.width(12); cout << left  << current->Category << " | ";
-		                cout.width(28); cout << left  << current->Product_Name << " | ";
-		                cout.width(8);  cout << right << fixed << setprecision(2) << current->Price << " | ";
-		                cout.width(8);  cout << right << fixed << setprecision(2) << current->Cost << " | ";
-		                cout.width(8);  cout << right << fixed << setprecision(2) << current->Stock << " |" << endl;
+		    
+		    bool found = false;
+		    int left = head;
+		    int right = tail;
+
+		    while (left <= right) 
+			{
+		        int mid = left + (right - left) / 2;
+		        
+		        if (queue[mid].category == target) 
+				{
+
+		            found = true;
+
+		            int temp = mid;
+		            while (temp >= head && queue[temp].category == target) 
+					{
+		                printProduct(queue[temp]);
+		                temp--;
 		            }
-		
-		            current = current->next;
+
+		            temp = mid + 1;
+		            while (temp <= tail && queue[temp].category == target) 
+					{
+		                printProduct(queue[temp]);
+		                temp++;
+		            }
+		            break;
+		        }
+		        else if (queue[mid].category < target) 
+				{
+		            left = mid + 1;
+		        }
+		        else 
+				{
+		            right = mid - 1;
 		        }
 		    }
-		
-		    if (!found)
-		    {
+		    
+		    if (!found) 
+			{
 		        cout << "|" << setw(84) << right << "No product found in this category." << " |" << endl;
 		    }
-		
+		    
 		    cout << "+---------+--------------+------------------------------+----------+----------+----------+" << endl;
+		}
+
+		void printProduct(const Apple& product) 
+		{
+		    cout << "| ";
+		    cout.width(7);  cout << left  << product.id << " | ";
+		    cout.width(12); cout << left  << product.category << " | ";
+		    cout.width(28); cout << left  << product.name << " | ";
+		    cout.width(8);  cout << right << fixed << setprecision(2) << product.price << " | ";
+		    cout.width(8);  cout << right << fixed << setprecision(2) << product.cost << " | ";
+		    cout.width(8);  cout << right << product.stock << " |" << endl;
 		}
 
 		//load data from file
 		void loadFile()
 		{
-			ifstream file("sorted_information.txt");
+			ifstream file("Apple_Store.txt");
 			string line;
 			
 			if(!file.is_open())
@@ -237,321 +312,213 @@ class Apple_Store
 			file.close();
 		}
 		
-		//using ID to delete the product
-		void deleteProduct(const string& id)
+		void compactQueue() 
 		{
-			int index = hashFunction(id);
-			Apple* current = table[index];
-			Apple* prev = NULL;
-			
-			while(current != NULL)
+		    int newTail = head - 1;
+		    for (int i = head; i <= tail; i++) 
 			{
-				if(current -> ID == id)
+		        if (!queue[i].deleted) 
 				{
-					if(prev == NULL)
-					{
-						table[index] = current -> next;
-					}
-					else
-					{
-						prev -> next = current -> next;
-					}
-					delete current;
-					
-					saveToFile("Apple_Store.txt");
-					saveSortedToFile("sorted_information.txt");
-					
-					cout << "Product " << id << " deleted successfully! " << endl;
-					return;
-				}
-				prev = current;
-				current = current -> next;
-			}
-			cout << "Product " << id << " not found!" << endl;
+		            queue[++newTail] = queue[i];
+		        }
+		    }
+		    tail = newTail;
+		    cout << "Queue compacted. New size: " << (tail-head+1) << endl;
 		}
 		
-		//increase in stock of commodities (restock) 
 		void updateStock(const string& id, double addedStock) 
 		{
-			if(addedStock <= 0)
-			{
-				cout << "Invalid input! Stock addition must be position." << endl;
-				return;
-			}
-			
-			int index = hashFunction(id);
-			Apple* current = table[index];
-			
-			while(current != NULL)
-			{
-				if(current -> ID == id)
-				{
-					current -> Stock += addedStock;
-					cout << "Stock updated! Product " << id << " now has " << current -> Stock
-					<< " units." << endl;
-					return;
-				}
-				current = current -> next;
-			} 
-			cout << "Product " << id << " not found!" << endl;
-		}
+		    if (addedStock <= 0) {
+		        cout << "Invalid input! Stock addition must be positive." << endl;
+		        return;
+		    }
 		
-		//check if an ID exists, if yes, not allow add with the same ID
-		bool checkID(const string& id)
-		{
-			int index = hashFunction(id);
-			Apple* current = table[index];
+		    if (empty()) {
+		        cout << "Error: Queue is empty, cannot update." << endl;
+		        return;
+		    }
 		
-		    while (current != NULL) 
+		    bool found = false;
+
+		    for (int i = head; i <= tail; i++) 
 			{
-		        if (current -> ID == id) 
+		        if (!queue[i].deleted && queue[i].id == id) 
 				{
-		            return true; 
-        		}
-        		current = current->next;
-			}
-			return false;
+		            queue[i].stock += addedStock;
+		            found = true;
+		            
+		            saveToFile("Apple_Store.txt");
+		            
+		            cout << "Stock updated! Product " << id 
+		                 << " now has " << queue[i].stock
+		                 << " units." << endl;
+		            break;
+		        }
+		    }
+		
+		    if (!found) 
+			{
+		        cout << "Product " << id << " not found!" << endl;
+		    }
 		}
 		
 		//release memory
 		void releaseMemory()
 		{
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		        while (current != NULL)
-		        {
-		            Apple* temp = current;
-		            current = current->next;
-		            delete temp;
-		        }
-		        table[i] = NULL;
-		    }
+		    head = 0;
+        	tail = -1;
+        	count = 0;
 		}
 		
-		void saveSortedToFile(const string& filename)
+		~Apple_Store() 
 		{
-		    Apple* allProducts[50];
-		    int count = 0;
-		
-		    // collect all pointers into array
-		    for (int i = 0; i < TABLE_SIZE; i++) 
-			{
-		        Apple* current = table[i];
-		        
-		        while (current != NULL) 
-				{
-		            allProducts[count++] = current;
-		            current = current->next;
-		        }
-		    }
-		    
-		    //Selection Sort by ID
-		    for (int i = 0; i < count - 1; i++) 
-			{
-		        int minIndex = i;
-		        
-		        for (int j = i + 1; j < count; j++)
-				{
-		            if (allProducts[j]->ID < allProducts[minIndex]->ID) 
-					{
-		                minIndex = j;
-		            }
-		        }
-		        if (minIndex != i) 
-				{
-		            Apple* temp = allProducts[i];
-		            allProducts[i] = allProducts[minIndex];
-		            allProducts[minIndex] = temp;
-		        }
-		    }
-		    
-			ofstream outFile(filename);
-			if (!outFile) {
-		        cout << "Error opening file!" << endl;
-		        return;
-		    }
-		
-		    for (int i = 0; i < count; i++) {
-		        outFile << allProducts[i]->ID << ","
-		                << allProducts[i]->Category << ","
-		                << allProducts[i]->Product_Name << ","
-		                << allProducts[i]->Price << ","
-		                << allProducts[i]->Cost << ","
-		                << allProducts[i]->Stock << endl;
-		    }
-		
-		    outFile.close();
-		}
-		
+        	releaseMemory();
+    	}
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		void displayCategories()
+		void displayCategories() 
 		{
-		    string categories[10];
+		    string categories[10]; 
 		    int catCount = 0;
 		
 		    cout << "=== Available Categories ===" << endl;
-		
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		        while (current != NULL)
-		        {
+		    
+		    for (int i = head; i <= tail; i++) 
+			{
+		        if (!queue[i].deleted) 
+				{
 		            bool exists = false;
 
-		            for (int j = 0; j < catCount; j++)
-		            {
-		                if (categories[j] == current -> Category)
-		                {
+		            for (int j = 0; j < catCount; j++) 
+					{
+		                if (categories[j] == queue[i].category) 
+						{
 		                    exists = true;
 		                    break;
 		                }
 		            }
 
-		            if (!exists)
-		            {
-		                categories[catCount++] = current->Category;
-		                cout << catCount << ". " << current->Category << endl;
+		            if (!exists && catCount < 10) 
+					{
+		                categories[catCount] = queue[i].category;
+		                cout << (catCount + 1) << ". " << queue[i].category << endl;
+		                catCount++;
 		            }
-		
-		            current = current->next;
 		        }
 		    }
 		
-		    if (catCount == 0)
+		    if (catCount == 0) 
+			{
 		        cout << "No categories available." << endl;
+		    }
 		}
 		
-		void displayData(const string& category)
+		void displayData(const string& category) 
 		{
 		    bool found = false;
 		
 		    cout << "+---------+--------------+------------------------------+----------+" << endl;
 		    cout << "| ID      | Category     | Product Name                 | Price    |" << endl;
 		    cout << "+---------+--------------+------------------------------+----------+" << endl;
-		
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		        while (current != NULL)
-		        {
-		            if (current->Category == category)
-		            {
-		                found = true;
-		                cout << "| ";
-		                cout.width(7);  cout << left << current->ID << " | ";
-		                cout.width(12); cout << left << current->Category << " | ";
-		                cout.width(28); cout << left << current->Product_Name << " | ";
-		                cout.width(8);  cout << right << fixed << setprecision(2) << current->Price << " | " << endl; 
-		            }
-		            current = current->next;
+
+		    for (int i = head; i <= tail; i++) 
+			{
+		        if (!queue[i].deleted && queue[i].category == category) 
+				{
+		            found = true;
+		            cout << "| ";
+		            cout.width(7);  cout << left << queue[i].id << " | ";
+		            cout.width(12); cout << left << queue[i].category << " | ";
+		            cout.width(28); cout << left << queue[i].name << " | ";
+		            cout.width(8);  cout << right << fixed << setprecision(2) << queue[i].price << " | " << endl;
 		        }
 		    }
 		
-		    if (!found)
-		    {
+		    if (!found) 
+			{
 		        cout << "|" << setw(84) << right << "No product found in this category." << " |" << endl;
 		    }
 		
 		    cout << "+---------+--------------+------------------------------+----------+" << endl;
 		}
 		
-		int getCategoryCount()
+		int getCategoryCount() 
 		{
 		    string categories[10];
 		    int catCount = 0;
 		
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		        while (current != NULL)
-		        {
+		    for (int i = head; i <= tail; i++) 
+			{
+		        if (!queue[i].deleted) 
+				{ 
 		            bool exists = false;
 		
-		            for (int j = 0; j < catCount; j++)
-		            {
-		                if (categories[j] == current->Category)
-		                {
+		            for (int j = 0; j < catCount; j++) 
+					{
+		                if (categories[j] == queue[i].category) 
+						{
 		                    exists = true;
 		                    break;
 		                }
 		            }
 		
-		            if (!exists)
-		            {
-		                categories[catCount++] = current->Category;
+		            if (!exists && catCount < 10)
+					{
+		                categories[catCount++] = queue[i].category;
 		            }
-		
-		            current = current->next;
 		        }
 		    }
+		
 		    return catCount;
 		}
 		
-		string getCategoryByIndex(int select)
+		string getCategoryByIndex(int select) 
 		{
 		    string categories[10];
 		    int catCount = 0;
 		
-		    for (int i = 0; i < TABLE_SIZE; i++)
-		    {
-		        Apple* current = table[i];
-		        while (current != NULL)
-		        {
+		    for (int i = head; i <= tail; i++) 
+			{
+		        if (!queue[i].deleted) 
+				{
 		            bool exists = false;
-		            for (int j = 0; j < catCount; j++)
-		            {
-		                if (categories[j] == current->Category)
-		                {
+		
+		            for (int j = 0; j < catCount; j++) {
+		                if (categories[j] == queue[i].category) 
+						{
 		                    exists = true;
 		                    break;
 		                }
 		            }
-		            if (!exists)
-		            {
-		                categories[catCount++] = current->Category;
+		            if (!exists && catCount < 10) {
+		                categories[catCount++] = queue[i].category;
 		            }
-		
-		            current = current->next;
 		        }
 		    }
 		
-		    if (select > 0 && select <= catCount)
-		    {
-		        return categories[select - 1];
-		    }
-		    else
-		    {
-		        return ""; // invalid
-		    }
+		    return (select > 0 && select <= catCount) ? categories[select - 1] : "";
 		}
 		
-		void addToCart(const string& category)
+		void addToCart(const string& category) 
 		{
-		    Apple* selectedProduct = NULL;
-
 		    displayData(category);
-		
+		    
 		    cout << "\nEnter Product ID to purchase: ";
 		    string id;
 		    cin.ignore();
 		    getline(cin, id);
 		
-		    int index = hashFunction(id);
-		    Apple* current = table[index];
-		    while (current != NULL)
-		    {
-		        if (current->ID == id && current->Category == category)
-		        {
-		            selectedProduct = current;
-		            break;
+		    Apple* selectedProduct = nullptr;
+		    for (int i = head; i <= tail && !selectedProduct; i++)
+			{
+		        if (!queue[i].deleted && queue[i].id == id && queue[i].category == category) 
+				{
+		            selectedProduct = &queue[i];
 		        }
-		        current = current->next;
 		    }
 		
-		    if (selectedProduct == NULL)
-		    {
+		    if (!selectedProduct) 
+			{
 		        cout << "Product not found in this category." << endl;
 		        return;
 		    }
@@ -560,38 +527,39 @@ class Apple_Store
 		    int qty;
 		    cin >> qty;
 		
-		    if (qty <= 0)
-		    {
+		    if (qty <= 0) 
+			{
 		        cout << "Invalid quantity!" << endl;
 		        return;
 		    }
-		
-		    if (selectedProduct->Stock < qty)
-		    {
-		        cout << "Not enough stock available. Current stock: " << selectedProduct->Stock << endl;
+		    if (selectedProduct->stock < qty) 
+			{
+		        cout << "Not enough stock available. Current stock: " 
+		             << selectedProduct->stock << endl;
 		        return;
 		    }
 		
-		    double total = qty * selectedProduct->Price;
+		    double total = qty * selectedProduct->price;
 		
 		    cout << "\nPurchase successful!" << endl;
-		    cout << "Product: " << selectedProduct->Product_Name << endl;
+		    cout << "Product: " << selectedProduct->name << endl;
 		    cout << "Quantity: " << qty << endl;
 		    cout << "Total price: RM " << fixed << setprecision(2) << total << endl;
-
+		
 		    ofstream cartFile("Cart.txt", ios::app);
-		    if (cartFile)
-		    {
-		        cartFile << selectedProduct->ID << ","
-		                  << selectedProduct->Product_Name << ","
-		                  << selectedProduct->Price << ","
-		                  << qty << ","
-		                  << total << endl;
+		    if (cartFile) 
+			{
+		        cartFile << selectedProduct->id << ","
+		                 << selectedProduct->name << ","
+		                 << selectedProduct->price << ","
+		                 << qty << ","
+		                 << total << endl;
 		        cartFile.close();
-		    }
-		    else
-		    {
-		        cout << "Failed to write order log." << endl;
+		    
+		    } 
+			else 
+			{
+		        cout << "Failed to write to cart file." << endl;
 		    }
 		}
 		
@@ -828,8 +796,7 @@ class Apple_Store
 		    }
 		
 		    inFile.close();
-		}
-			
+		}			
 };
 
 int main()
@@ -902,8 +869,8 @@ int main()
 						
 						cout << "\nEnter 1 to exit" << endl;
 						cin >> choice;
-						break;
 					}while(choice != 1);
+					break;
 					
 			case 3: do
 					{
@@ -926,8 +893,8 @@ int main()
 				
 				    cout << "\nEnter 1 to exit" << endl;
 				    cin >> choice;
-				    break;
 					}while(choice != 1);
+					break;
 			
 			case 4: do
 					{
@@ -936,8 +903,8 @@ int main()
 					
 					    cout << "\nEnter 1 to exit" << endl;
 					    cin >> choice;
-					    break;
 					}while(choice != 1);
+					break;
 					
 			case 5: do
 					{
@@ -947,8 +914,8 @@ int main()
 						
 						cout << "\nEnter 1 to exit" << endl;
 				    	cin >> choice;
-						break;
 					}while(choice != 1);
+					break;
 					
 			case 6: do
 					{
@@ -957,8 +924,8 @@ int main()
 						
 						cout << "\nEnter 1 to exit" << endl;
 						cin >> choice;
-						break;
 					}while(choice != 1);
+					break;
 					
 			case 10: A.releaseMemory();
 					return 0;
