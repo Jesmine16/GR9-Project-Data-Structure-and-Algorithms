@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<iomanip>
+#include <ctime>
 
 using namespace std;
 
@@ -608,9 +609,9 @@ class Apple_Store
 		    double total = 0.0;
 		
 		    cout << "\n=== Your Shopping Cart ===" << endl;
-		    cout << "+----+------------------------------+---------+--------+----------+" << endl;
-		    cout << "| No | Product Name                 | Price   | Qty    | Subtotal |" << endl;
-		    cout << "+----+------------------------------+---------+--------+----------+" << endl;
+		    cout << "+----+------------------------------+----------+--------+----------+" << endl;
+		    cout << "| No | Product Name                 | Price    | Qty    | Subtotal |" << endl;
+		    cout << "+----+------------------------------+----------+--------+----------+" << endl;
 		
 		    while (getline(cartFile, line))
 		    {
@@ -629,21 +630,206 @@ class Apple_Store
 		        qty = stoi(line.substr(pos3 + 1, pos4 - pos3 - 1));
 		        subtotal = stod(line.substr(pos4 + 1));
 		
-		        cout << "| " << setw(2) << index++ << " | ";
+		        cout << "| " << setw(2) << left << index++ << " | ";
 		        cout << setw(28) << left << name << " | ";
-		        cout << setw(6) << fixed << setprecision(2) << right << price << " | ";
+		        cout << setw(8) << fixed << setprecision(2) << left << price << " | ";
 		        cout << setw(6) << left << qty << " | ";
-		        cout << setw(8) << subtotal << " |" << endl;
+		        cout << setw(8) << left << subtotal << " |" << endl;
 		
 		        total += subtotal;
 		    }
 		
-		    cout << "+----+------------------------------+---------+--------+----------+" << endl;
+		    cout << "+----+------------------------------+----------+--------+----------+" << endl;
 		    cout << "Total Amount: RM " << fixed << setprecision(2) << total << endl;
 		
 		    cartFile.close();
 		}
+	
+		string getCurrentDateTime() 
+		{
+		    time_t now = time(0);                     
+		    tm *ltm = localtime(&now);              
+		
+		    char buffer[20];                         
+		    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", ltm);
+		
+		    return string(buffer);
+		}
+		
+		string getInv() 
+		{
+		    time_t now = time(0);                     
+		    tm *ltm = localtime(&now);              
+		
+		    char buffer[20];                         
+		    strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", ltm);
+		
+		    return string(buffer);
+		}
+		
+		void checkoutCart()
+		{
+		    ifstream inFile("Cart.txt");
+		    if (!inFile)
+		    {
+		        cout << "Cart.txt not found or cannot be opened." << endl;
+		        return;
+		    }
+		
+		    string line;
+		    double grandTotal = 0.0, subTotal = 0.0;
+		    int count = 1;
+		    
+		    string Inv = getInv();
+		    string now = getCurrentDateTime();
+			
+			cout << "Invoice No: " << Inv << endl;
 
+			cout << "+--------------------------------------------------------------------+" << endl;
+			cout << "|                                                                    |" << endl;
+			cout << "|                            Apple Store                             |" << endl;
+			cout << "|                                                                    |" << endl;			
+			cout << "|                                                                    |" << endl;
+			cout << "|                                                                    |" << endl;
+			cout << "|   Invoice No	:INV" << Inv << "                                   |" << endl;
+			cout << "|   Date	:" << now << "                                 |" << endl;
+			cout << "|                                                                    |" << endl;			
+			cout << "|                                                                    |" << endl;
+			cout << "|                                                                    |" << endl;
+	
+		    ofstream orderFile("Order.txt", ios::app);
+		    if (!orderFile)
+		    {
+		        cout << "Failed to open Order.txt for writing." << endl;
+		        return;
+		    }
+		
+		    while (getline(inFile, line))
+		    {
+		        string id, name, priceCart, qtyCart, subtotalCart;
+		        size_t pos1 = line.find(',');
+		        size_t pos2 = line.find(',', pos1 + 1);
+		        size_t pos3 = line.find(',', pos2 + 1);
+		        size_t pos4 = line.find(',', pos3 + 1);
+		
+		        if (pos1 == string::npos || pos2 == string::npos || pos3 == string::npos || pos4 == string::npos)
+		            continue;
+		
+		        id = line.substr(0, pos1);
+		        name = line.substr(pos1 + 1, pos2 - pos1 - 1);
+		        priceCart = line.substr(pos2 + 1, pos3 - pos2 - 1);
+		        qtyCart = line.substr(pos3 + 1, pos4 - pos3 - 1);
+		        subtotalCart = line.substr(pos4 + 1);
+		
+		        int qty = stoi(qtyCart);
+		        double total = stod(subtotalCart);
+		        double price = stod(priceCart);
+		        subTotal += total;
+		        			
+				cout << "|   " << count++ << ". " << setw(28) << left << name << "RM " << setw(10) << fixed << setprecision(2) << left << price << "   " <<
+				setw(2) << qty << "   " << "RM " << setw(10) << fixed << setprecision(2) << left << total << "|" << endl;
+		
+		        orderFile << "\n" << now << "," << Inv << "," << id << "," << name << "," << fixed << setprecision(2) << price << "," << qty << "," << fixed << setprecision(2) << total;
+		    }
+		    	double SST = subTotal * 0.1;
+		    	grandTotal = subTotal + SST; 
+		    
+		    	cout << "|                                                                    |" << endl;			
+				cout << "|                                                                    |" << endl;
+				cout << "|                                                                    |" << endl;
+				cout << "|   Subtotal " << "                                           RM " << setw(10) << fixed << setprecision(2) << left << subTotal << "|"<< endl; 
+				cout << "|   SST (10%) " << "                                          RM "<< setw(10) << fixed << setprecision(2) << left << SST << "|"<< endl; 
+				cout << "|                                                      ============  |" << endl;
+				cout << "|   Grand Total " << "                                        RM "<< setw(10) << fixed << setprecision(2) << left << grandTotal << "|"<< endl; 
+				cout << "|                                                      ============  |" << endl;
+				cout << "|                                                                    |" << endl;			
+				cout << "|                                                                    |" << endl;
+				cout << "|                                                                    |" << endl;
+				cout << "+--------------------------------------------------------------------+" << endl;
+		    
+		    orderFile << "\n" << fixed << setprecision(2) << subTotal << "," << fixed << setprecision(2) << SST << "," << fixed << setprecision(2) << grandTotal << endl;
+		
+		    inFile.close();
+		    orderFile.close();
+		
+		    cout << "\nOrder saved to Order.txt with timestamp." << endl;
+		}
+		
+		void viewOrderHistory()
+		{
+		    ifstream inFile("Order.txt");
+		    if (!inFile)
+		    {
+		        cout << "Order.txt not found or cannot be opened." << endl;
+		        return;
+		    }
+		
+		    string line;
+		    string lastTime = "", lastInv = "";
+		    int orderCount = 0;
+		
+		    cout << "\n=== Order History ===" << endl;
+		
+		    while (getline(inFile, line))
+		    {
+		        if (line.empty()) continue;
+
+		        if (isdigit(line[0]) && line.find(':') == string::npos && line.find('-') == string::npos)
+		        {
+		            double subtotal, sst, grandTotal;
+		            size_t p1 = line.find(',');
+		            size_t p2 = line.find(',', p1 + 1);
+		
+		            subtotal = stod(line.substr(0, p1));
+		            sst = stod(line.substr(p1 + 1, p2 - p1 - 1));
+		            grandTotal = stod(line.substr(p2 + 1));
+		
+		            cout << "+----------------------------------------------------------------+" << endl;
+		            cout << "Subtotal   : RM " << fixed << setprecision(2) << subtotal << endl;
+		            cout << "SST (10%)  : RM " << fixed << setprecision(2) << sst << endl;
+		            cout << "Grand Total: RM " << fixed << setprecision(2) << grandTotal << endl;
+		            cout << "+----------------------------------------------------------------+\n\n" << endl;
+		            continue;
+		        }
+		
+		        string date, inv, id, name, priceStr, qtyStr, subtotalStr;
+		
+		        size_t pos1 = line.find(',');
+		        size_t pos2 = line.find(',', pos1 + 1);
+		        size_t pos3 = line.find(',', pos2 + 1);
+		        size_t pos4 = line.find(',', pos3 + 1);
+		        size_t pos5 = line.find(',', pos4 + 1);
+		        size_t pos6 = line.find(',', pos5 + 1);
+		
+		        if (pos6 == string::npos) continue;
+		
+		        date = line.substr(0, pos1);
+		        inv = line.substr(pos1 + 1, pos2 - pos1 - 1);
+		        id = line.substr(pos2 + 1, pos3 - pos2 - 1);
+		        name = line.substr(pos3 + 1, pos4 - pos3 - 1);
+		        priceStr = line.substr(pos4 + 1, pos5 - pos4 - 1);
+		        qtyStr = line.substr(pos5 + 1, pos6 - pos5 - 1);
+		        subtotalStr = line.substr(pos6 + 1);
+
+		        if (inv != lastInv)
+		        {
+		            orderCount++;
+		            cout << "Order #" << orderCount << " - " << date << " (Invoice: " << inv << ")" << endl;
+		            cout << "+----------------------------------------------------------------+" << endl;
+		            cout << "| Product Name                 | Price     | Qty | Subtotal      |" << endl;
+		            cout << "+----------------------------------------------------------------+" << endl;
+		            lastInv = inv;
+		        }
+		
+		        cout << "| " << setw(28) << left << name
+		             << " | " << setw(9) << priceStr
+		             << " | " << setw(3) << qtyStr
+		             << " | " << setw(13) << subtotalStr << " |" << endl;
+		    }
+		
+		    inFile.close();
+		}
+			
 };
 
 int main()
@@ -656,14 +842,18 @@ int main()
 	char option;
 	string target;
 	
+	string now = A.getCurrentDateTime();
 	do
 	{
 		system("cls");
+		cout << "Current time: " << now << endl;
 		cout << "Welcome to Apple Store" << endl;
 		cout << "1. Display Data" << endl;
 		cout << "2. Display Category" << endl;
 		cout << "3. Add to Cart" << endl;
 		cout << "4. View Cart" << endl;
+		cout << "5. Check Out" << endl;
+		cout << "6. View Order History" << endl;
 	
 		cout << "Enter choice (1-10) : ";
 		cin >> choice;
@@ -690,7 +880,8 @@ int main()
 					}while(choice != 1);
 					break;
 					
-			case 2: {
+			case 2: do
+					{
 						system("cls");
 						A.displayCategories();
 						
@@ -712,9 +903,10 @@ int main()
 						cout << "\nEnter 1 to exit" << endl;
 						cin >> choice;
 						break;
-					}
+					}while(choice != 1);
 					
-			case 3:{
+			case 3: do
+					{
 				    system("cls");
 				    A.displayCategories();
 				
@@ -735,17 +927,39 @@ int main()
 				    cout << "\nEnter 1 to exit" << endl;
 				    cin >> choice;
 				    break;
-					}
+					}while(choice != 1);
 			
-			case 4: {
+			case 4: do
+					{
 					    system("cls");
 					    A.viewCart();
 					
 					    cout << "\nEnter 1 to exit" << endl;
 					    cin >> choice;
 					    break;
-					}
-			
+					}while(choice != 1);
+					
+			case 5: do
+					{
+						system("cls");
+						cout << now << endl;
+						A.checkoutCart();
+						
+						cout << "\nEnter 1 to exit" << endl;
+				    	cin >> choice;
+						break;
+					}while(choice != 1);
+					
+			case 6: do
+					{
+						system("cls");
+    					A.viewOrderHistory();
+						
+						cout << "\nEnter 1 to exit" << endl;
+						cin >> choice;
+						break;
+					}while(choice != 1);
+					
 			case 10: A.releaseMemory();
 					return 0;
 		}
