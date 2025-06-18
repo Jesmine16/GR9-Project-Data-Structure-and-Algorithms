@@ -690,7 +690,7 @@ int main() {
 							
 				q.append(id, category, name, price, cost, stock);
 				q.savetofile(filename);  // Save new data 
-				cout << "Data have been save successful! " << endl;
+				cout << "Data save successfully. " << endl;
 				q.cont();
 				break;
 				
