@@ -48,3 +48,5 @@ A043,iPhone,iPhone 14 Pro Max,5199,4999,50
 A044,iPhone,iPhone 14 Pro,4699,4499,85
 A045,iPhone ,iPhone 14,3599,3399,48
 A050,Accessories,AirTag (4-pack),499,299,60
+A051,AirPods,Airpods 3,649,449,30
+A052,TV & Home,HomePod 2nd Gen,1199,999,20
