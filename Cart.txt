@@ -1,3 +1,10 @@
-alice@gmail.com,Member,A008,iPad Air,2799,1,2799
-jay@gmail.com,Customer,A014,AirPods Pro 2,1099,1,1099.00
-jay@gmail.com,Customer,A007,iPad Pro,4799,10,47990
+jay@gmail.com,Member,A014,AirPods Pro 2,1099,1,1099.00
+cat@gmail.com,Member,A009,iPad mini,2199,2,4398.00
+eric88@gmail.com,Member,A033,AirPods Max,2499,1,2499.00
+bob88@gmail.com,Customer,A042,Apple Pencil(1st Generation),449,3,1347.00
+alice123@gmail.com,Customer,A031,Apple Pencil (USB-C),349,2,698.00
+gavinho@gmail.com,Customer,A036,HomePod mini,529,1,529.00
+danny.d@gmail.com,Customer,A005,iPhone 15,3499,1,3499.00
+hannah99@gmail.com,Customer,A047,Apple Watch Series 8,1599,1,1599.00
+yongming@gmail.com,Customer,A035,HomePod,1549,2,3098.00
+gavin@gmail.com,Customer,A045,iPhone 14,3599,1,3599.00

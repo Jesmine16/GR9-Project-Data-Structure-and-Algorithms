@@ -1,0 +1,7 @@
+R001,Phone Cover(White),20,117
+R002,Phone Cover(Black),20,19
+R003,Phone Cover (Red),10,25
+R004,Phone Cover (Green),10,18
+R005,Wired Earphone,20,12
+R006,Lightning to USB-C Cable,15,30
+R007,Phone Cover (Blue),10,15
