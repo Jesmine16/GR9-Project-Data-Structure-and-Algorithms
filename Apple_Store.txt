@@ -1,0 +1,50 @@
+A038,Accessories,Multiport Adapter,349,149,52
+A039,Accessories,Magic Keyboard with Touch ID,799,599,32
+A040,Accessories,Magic Trackpad (USB-C),599,399,54
+A041,Accessories,Magic Mouse (USB-C),399,199,68
+A048,Accessories,Magic Keyboard for iMac,699,499,81
+A049,Accessories,MagSafe Duo Charger,599,399,42
+A013,AirPods,AirPods 4,829,629,20
+A014,AirPods,AirPods Pro 2,1099,899,20
+A015,AirPods,AirPods Max,3499,3299,20
+A030,AirPods,AirPods 4,599,399,15
+A032,AirPods,AirPods Pro 2,1099,899,54
+A033,AirPods,AirPods Max,2499,2299,51
+A001,Mac,MacBook Air,4499,4299,30
+A002,Mac,MacBook Pro,6999,6499,30
+A003,Mac,iMac,5799,5599,20
+A018,Mac,MacBook Air,4499,4299,45
+A019,Mac,MacBook Pro,6999,6799,50
+A020,Mac,iMac,5799,5599,48
+A021,Mac,Mac mini,2499,2299,48
+A022,Mac,Mac Studio,8999,8799,50
+A023,Mac,Mac Pro,32999,32799,98
+A024,Mac,Studio Display,6999,6799,40
+A025,Mac,Pro Display XDR,19999,19799,46
+A034,TV & Home,Apple TV 4K,699,499,50
+A035,TV & Home,HomePod,1549,1349,39
+A036,TV & Home,HomePod mini,529,329,50
+A037,TV & Home,Siri Remote,269,69,18
+A010,Watch,Apple Watch Series 10,1799,1599,20
+A011,Watch,Apple Watch Ultra 2,3799,3599,20
+A012,Watch,Apple Watch SE,999,799,20
+A026,Watch,Apple Watch Series 10,1799,1599,58
+A028,Watch,Apple Watch SE,999,799,42
+A029,Watch,Apple Watch Hermes,5499,5299,97
+A046,Watch,Apple Watch Series 9,1799,1599,69
+A047,Watch,Apple Watch Series 8,1599,1399,98
+A007,iPad,iPad Pro,4799,4599,20
+A008,iPad,iPad Air,2799,2599,20
+A009,iPad,iPad mini,2199,1999,20
+A017,iPad,Magic Keyboard,1149,949,68
+A027,iPad,Apple Pencil Pro,549,349,69
+A031,iPad,Apple Pencil (USB-C),349,149,68
+A042,iPad,Apple Pencil(1st Generation),449,249,50
+A004,iPhone,iPhone 16 Pro,4999,4799,20
+A005,iPhone,iPhone 15,3499,3299,20
+A006,iPhone,iPhone 16e,2999,2799,20
+A016,iPhone,iPhone 15 Plus,3999,3799,60
+A043,iPhone,iPhone 14 Pro Max,5199,4999,50
+A044,iPhone,iPhone 14 Pro,4699,4499,85
+A045,iPhone ,iPhone 14,3599,3399,48
+A050,Accessories,AirTag (4-pack),499,299,60
