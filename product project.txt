@@ -1,0 +1,67 @@
+DATA STRUCTURE PROJECT
+
+PRODUCTS (50)
+
+
+A001,iPhone,iPhone 15,3499,3299,50
+A002,iPhone,iPhone 15 Plus,3999,3799,50
+A003,iPhone,iPhone 16e,2999,2799,50
+A004,iPhone,iPhone 16,3999,3799,50
+A005,iPhone,iPhone 16 Plus,4499,4299,50
+A006,iPhone,iPhone 16 Pro,4999,4799,50
+A007,iPhone,iPhone 16 Pro Max,5999,5799,50
+
+A008,iPad,iPad Pro,4799,4599,50
+A009,iPad,iPad Air,2799,2599,50
+A010,iPad,iPad,1599,1399,50
+A011,iPad,iPad mini,2199,1999,50
+
+A012,iPad,Apple Pencil Pro,549,349,50
+A013,iPad,Apple Pencil (USB-C),349,149,50
+A014,iPad,Apple Pencil (1st Generation),449,249,50
+A015,iPad,Magic Keyboard for iPad Pro,1399,1199,50
+A016,iPad,Magic Keyboard for iPad Air,1299,1099,50
+A017,iPad,Magic Keyboard Folio,1149,949,50
+
+A018,Mac,MacBook Air,4499,4299,50
+A019,Mac,MacBook Pro,6999,6799,50
+A020,Mac,iMac,5799,5599,50
+A021,Mac,Mac mini,2499,2299,50
+A022,Mac,Mac Studio,8999,8799,50
+A023,Mac,Mac Pro,32999,32799,50
+
+A024,Mac,Studio Display,6999,6799,50
+A025,Mac,Pro Display XDR,19999,19799,50
+
+A026,Watch,Apple Watch Series 10,1799,1599,50
+A027,Watch,Apple Watch Ultra 2,3799,3599,50
+A028,Watch,Apple Watch SE,999,799,50
+A029,Watch,Apple Watch Hermes,5499,5299,50
+
+A030,AirPods,AirPods 4,599,399,50
+A031,AirPods,AirPods 4 with Active Noise Cancellation,899,699,50
+A032,AirPods,AirPods Pro 2,1099,899,50
+A033,AirPods,AirPods Max,2499,2299,50
+
+A034,TV & Home,Apple TV 4K,699,499,50
+A035,TV & Home,HomePod,1549,1349,50
+A036,TV & Home,HomePod mini,529,329,50
+A037,TV & Home,Siri Remote,269,69,50
+
+A038,Accessories,20W USB-C Power Adapter,99
+A039,Accessories,AirTag,139
+A040,Accessories,MagSafe Charger (1m),219
+A041,Accessories,30W USB-C Power Adapter,159
+A042,Accessories,USB-C to Lightning Adapter,159
+A043,Accessories,35W Dual USB-C Port Power Adapter,239
+A044,Accessories,240W USB-C Charge Cable (2m),129
+A045,Accessories,USB-C to 3.5mm Headphone Jack Adapter,55
+
+A046,Accessories,USB-C Digital AV Multiport Adapter,349
+A047,Accessories,Magic Keyboard with Touch ID and Numeric Keypad,799
+A048,Accessories,Magic Trackpad (USB‑C),599
+A049,Accessories,Magic Mouse (USB‑C),399
+
+A050,Accessories,USB-C to MagSafe 3 Cable (2m),189
+
+
