@@ -9,7 +9,7 @@
 
 using namespace std;
 
-const int RUN = 32; //use for sorting
+const int RUN = 70; //use for sorting
 const int MAX_PRODUCTS = 70;
 const int MAX_ITEMS = 70;
 
