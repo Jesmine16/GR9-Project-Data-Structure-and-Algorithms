@@ -1708,10 +1708,19 @@ class AppleStore
 	            grandTotal = stod(line.substr(p2 + 1));
 				
 				// Set summary key (date or month) depending on report type
-	            string key = (reportChoice == 1) 
-	                       ? date.substr(0, 10)     
-	                       : date.substr(0, 7);     
-				
+	            string key;
+                if (reportChoice == 1) {
+                	key = date.substr(0, 10); // full date
+				} else{
+					if (date.length() >= 10) {
+					string month = date.substr(3, 2); // MM
+					string year = date.substr(6, 4);  // YYYY
+					key = month + "-" + year;
+				} else{
+					key = date; //fallback
+				}
+			}
+			
 				// Check if this date/month already exists in summary array
 	            bool found = false;
 	            for (int i = 0; i < count; ++i) 
@@ -2959,7 +2968,7 @@ class Apple_Store
 		        }
 		        else if (commaCount == 3)
 		        {
-		            // Final totals line in file – already calculated manually
+		            // Final totals line in file â€“ already calculated manually
 		            continue;
 		        }
 		    }
